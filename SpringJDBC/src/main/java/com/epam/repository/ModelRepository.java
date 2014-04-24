@@ -14,11 +14,16 @@ import java.util.List;
  */
 public interface ModelRepository<T> {
 
+    abstract boolean create(T entity);
+
+    abstract int update(T entity);
+
+    abstract boolean delete(T entity);
+
     abstract T find(Integer id);
+
+    abstract T findByName(String name);
 
     abstract List<T> findAll();
 
-    abstract boolean create(T entity);
-
-    abstract T findByName(String name);
 }

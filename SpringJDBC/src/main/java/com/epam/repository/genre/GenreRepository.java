@@ -37,6 +37,21 @@ public class GenreRepository extends DAOTemplate implements ModelRepository<Genr
         jdbcTemplate = (JdbcTemplate) appContext.getBean("jdbcTemplate");
     }
 
+    public boolean create(Genre genre) {
+        jdbcTemplate.update(
+                ADD_GENRE,
+                genre.getName());
+        return true;
+    }
+
+    public int update(Genre entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public boolean delete(Genre entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     public Genre find(final Integer id) {
         return jdbcTemplate.queryForObject(FIND_GENRE_BY_ID,
                 new Object[]{id},
@@ -50,27 +65,6 @@ public class GenreRepository extends DAOTemplate implements ModelRepository<Genr
                 });
     }
 
-    public List<Genre> findAll() {
-        List<Genre> genres = this.jdbcTemplate.query(
-                GET_ALL_GENRES,
-                new RowMapper<Genre>() {
-                    public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        Genre genre = new Genre();
-                        genre.setId(rs.getInt("ID"));
-                        genre.setName(rs.getString("name"));
-                        return genre;
-                    }
-                });
-        return genres;
-    }
-
-    public boolean create(Genre genre) {
-        jdbcTemplate.update(
-                ADD_GENRE,
-                genre.getName());
-        return true;
-    }
-
     public Genre findByName(final String name) {
         return jdbcTemplate.queryForObject(FIND_GENRE_BY_NAME,
                 new Object[]{name},
@@ -82,6 +76,20 @@ public class GenreRepository extends DAOTemplate implements ModelRepository<Genr
                         return genre;
                     }
                 });
+    }
+
+    public List<Genre> findAll() {
+        List<Genre> genres = jdbcTemplate.query(
+                GET_ALL_GENRES,
+                new RowMapper<Genre>() {
+                    public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Genre genre = new Genre();
+                        genre.setId(rs.getInt("ID"));
+                        genre.setName(rs.getString("name"));
+                        return genre;
+                    }
+                });
+        return genres;
     }
 
 }
