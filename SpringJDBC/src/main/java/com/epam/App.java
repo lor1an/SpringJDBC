@@ -1,8 +1,10 @@
 package com.epam;
 
 import com.epam.model.author.ClassForInjection;
+import com.epam.model.book.Book;
 import com.epam.model.genre.Genre;
 import com.epam.repository.author.AuthorRepository;
+import com.epam.repository.book.BookRepository;
 import com.epam.repository.genre.GenreRepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -23,15 +25,19 @@ public class App {
         System.out.println(gr.findAll());
         Genre g3 = new Genre("Detective");
         gr.create(g3);
-        g3 = gr.findByName(g3.getName());
-        System.out.println(gr.findAll());
-        gr.delete(g3);
-        System.out.println(gr.findAll());
-        g2.setName("Comics");
-        gr.update(g2);
-        System.out.println(gr.findAll());
+//        g3 = gr.findByName(g3.getName());
+//        System.out.println(gr.findAll());
+//        gr.delete(g3);
+//        System.out.println(gr.findAll());
+//        g2.setName("Comics");
+//        gr.update(g2);
+//        System.out.println(gr.findAll());
 
-//        AuthorRepository ar = (AuthorRepository) appContext.getBean("authorDAO");
-//        System.out.println(ar.findAll());
+        AuthorRepository ar = (AuthorRepository) appContext.getBean("authorDAO");
+        System.out.println(ar.findAll());
+
+        BookRepository br = (BookRepository) appContext.getBean("bookDAO");
+        Book b1 = br.find(0);
+        System.out.println(b1);
     }
 }

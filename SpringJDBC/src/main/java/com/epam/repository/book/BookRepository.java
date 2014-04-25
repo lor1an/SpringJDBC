@@ -5,12 +5,16 @@
  */
 package com.epam.repository.book;
 
+import com.epam.model.author.Author;
 import com.epam.model.book.Book;
-import com.epam.repository.DAOTemplate;
-import com.epam.repository.ModelRepository;
+import com.epam.model.genre.Genre;
+  import com.epam.repository.ModelRepository;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 /**
  *
@@ -20,7 +24,11 @@ public class BookRepository implements ModelRepository<Book> {
 
     private static final String ADD_BOOK = "insert into books(Title, Author, Genre, Stock) values (?,?,?,?);";
     private static final String GET_ALL_BOOKS = "select Id, Title, Author, Genre, Stock from books;";
-    private static final String FIND_BOOK_BY_ID = "select Title, Author, Genre, Stock from books where Id=?";
+    private static final String FIND_BOOK_BY_ID
+            = "select Title,a.ID aid, a.Name aname, a.Surname asur, g.ID gen_id, g.Name gen_name, Stock "
+            + "from Books b inner join Genres g on b.Genre=g.ID "
+            + "inner join Authors a on b.Author = a.ID "
+            + "where Id=?";
     private static final String FIND_BOOKS_BY_GENRE = "select ID, Title, Author,Stock from books where Genre=?;";
     private static final String FIND_BOOKS_BY_AUTHOR = "select ID, Title, Genre,Stock from books where Author=?;";
     private static final String FIND_BOOKS_BY_TITLE = "select ID, Author,Genre, Stock from books where Title=?;";
@@ -35,8 +43,23 @@ public class BookRepository implements ModelRepository<Book> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Book find(Integer id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Book find(final Integer id) {
+        return jdbcTemplate.queryForObject(FIND_BOOK_BY_ID,
+                new Object[]{id},
+                new RowMapper<Book>() {
+                    public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Book book = new Book();
+                        int aID = rs.getInt("aid");
+                        String aname = rs.getString("aname");
+                        String asurname = rs.getString("asur");
+                        book.setId(id);
+                        book.setGenre(new Genre(rs.getInt("gen_id"), rs.getString("gen_name")));
+                        book.setStock(rs.getInt("Stock"));
+                        book.setAuthor(new Author(aID, aname, asurname));
+                        book.setTitle(rs.getString("Title"));
+                        return book;
+                    }
+                });
     }
 
     public List<Book> findAll() {
