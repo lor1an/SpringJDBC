@@ -2,6 +2,7 @@ package com.epam;
 
 import com.epam.model.author.ClassForInjection;
 import com.epam.model.genre.Genre;
+import com.epam.repository.author.AuthorRepository;
 import com.epam.repository.genre.GenreRepository;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -11,20 +12,26 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  */
 public class App {
-    
+
     public static void main(String[] args) {
         ApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:/newSpringXMLConfig.xml");
-        ClassForInjection cfi = (ClassForInjection) appContext.getBean("classForInjection");
-        System.out.println(cfi.toString());
-        cfi.printFullName();
-        Genre g1 = new GenreRepository(appContext).find(0);
+        GenreRepository gr = (GenreRepository) appContext.getBean("genreDAO");
+        Genre g1 = gr.find(0);
+        Genre g2 = gr.find(1);
         System.out.println(g1);
-        Genre g2 = new GenreRepository(appContext).find(1);
         System.out.println(g2);
-        System.out.println(new GenreRepository(appContext).findAll());
-        Genre g3 = new Genre("detective");
-        new GenreRepository(appContext).create(g3);
-        System.out.println(new GenreRepository(appContext).findAll());
-        System.out.println(new GenreRepository(appContext).findByName("sci-fi"));
+        System.out.println(gr.findAll());
+        Genre g3 = new Genre("Detective");
+        gr.create(g3);
+        g3 = gr.findByName(g3.getName());
+        System.out.println(gr.findAll());
+        gr.delete(g3);
+        System.out.println(gr.findAll());
+        g2.setName("Comics");
+        gr.update(g2);
+        System.out.println(gr.findAll());
+
+//        AuthorRepository ar = (AuthorRepository) appContext.getBean("authorDAO");
+//        System.out.println(ar.findAll());
     }
 }

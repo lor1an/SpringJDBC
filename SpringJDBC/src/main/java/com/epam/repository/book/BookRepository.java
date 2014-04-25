@@ -9,12 +9,14 @@ import com.epam.model.book.Book;
 import com.epam.repository.DAOTemplate;
 import com.epam.repository.ModelRepository;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 /**
  *
  * @author Anatolii_Hlazkov
  */
-public class BookRepository extends DAOTemplate implements ModelRepository<Book> {
+public class BookRepository implements ModelRepository<Book> {
 
     private static final String ADD_BOOK = "insert into books(Title, Author, Genre, Stock) values (?,?,?,?);";
     private static final String GET_ALL_BOOKS = "select Id, Title, Author, Genre, Stock from books;";
@@ -25,6 +27,13 @@ public class BookRepository extends DAOTemplate implements ModelRepository<Book>
     private static final String UPDATE_BOOK_STOCK = "update books set Stock=? where ID =?;";
     private static final String UPDATE_BOOK = "update books set Title=?, Author=?, Genre=?, Stock=? where ID=?;";
     private static final String DELETE_BOOK = "delete from books where id=?";
+
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public Book find(Integer id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -38,7 +47,7 @@ public class BookRepository extends DAOTemplate implements ModelRepository<Book>
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Book findByName(String name) {
+    public Book findByTitle(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

@@ -12,13 +12,15 @@ import com.epam.repository.ModelRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 /**
  *
  * @author Anatolii_Hlazkov
  */
-public class AuthorRepository extends DAOTemplate implements ModelRepository<Author> {
+public class AuthorRepository implements ModelRepository<Author> {
 
     private static final String FIND_AUTHOR_BY_ID = "select Name,Surname from authors where ID = ?;";
     private static final String FIND_AUTHORS_BY_NAME = "select ID,Surname from authors where Name = ?;";
@@ -26,14 +28,22 @@ public class AuthorRepository extends DAOTemplate implements ModelRepository<Aut
     private static final String FIND_AUTHORS_BY_ALL = "select ID from authors where Name = ? and Surname = ?;";
     private static final String UPDATE_AUTHOR = "update authors set Name = ?, Surname=? where ID=?;";
     private static final String ADD_AUTHOR = "insert into authors(Name, Surname) values (?,?);";
-    private static final String GET_ALL_AUTHORS = "select id, name. surname from authors;";
+    private static final String GET_ALL_AUTHORS = "select id, name, surname from authors;";
     private static final String DELETE_AUTHOR = "delete from authors where id=?";
 
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
+
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
     public boolean create(Author author) {
-        jdbcTemplate.update(
+        int i = jdbcTemplate.update(
                 ADD_AUTHOR,
                 author.getName(),
                 author.getSurname());
+        System.out.println("-----------------"+i);
         return true;
     }
 
@@ -59,7 +69,7 @@ public class AuthorRepository extends DAOTemplate implements ModelRepository<Aut
                 });
     }
 
-    public Author findByName(String name) {
+    public Author findBySurname(String name) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

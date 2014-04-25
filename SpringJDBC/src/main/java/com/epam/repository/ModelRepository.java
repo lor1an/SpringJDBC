@@ -22,8 +22,6 @@ public interface ModelRepository<T> {
 
     abstract T find(Integer id);
 
-    abstract T findByName(String name);
-
     abstract List<T> findAll();
 
 }

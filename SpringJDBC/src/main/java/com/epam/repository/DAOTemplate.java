@@ -5,13 +5,14 @@
  */
 package com.epam.repository;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 
 public abstract class DAOTemplate {
-   // @Autowired
+
+    @Autowired
     protected JdbcTemplate jdbcTemplate;
 
-    
 }
