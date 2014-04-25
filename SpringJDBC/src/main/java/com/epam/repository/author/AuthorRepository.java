@@ -22,14 +22,14 @@ import org.springframework.jdbc.core.RowMapper;
  */
 public class AuthorRepository implements ModelRepository<Author> {
 
-    private static final String FIND_AUTHOR_BY_ID = "select Name,Surname from authors where ID = ?;";
-    private static final String FIND_AUTHORS_BY_NAME = "select ID,Surname from authors where Name = ?;";
-    private static final String FIND_AUTHORS_BY_SURNAME = "select ID,Name from authors where Surname = ?;";
-    private static final String FIND_AUTHORS_BY_ALL = "select ID from authors where Name = ? and Surname = ?;";
-    private static final String UPDATE_AUTHOR = "update authors set Name = ?, Surname=? where ID=?;";
-    private static final String ADD_AUTHOR = "insert into authors(Name, Surname) values (?,?);";
-    private static final String GET_ALL_AUTHORS = "select id, name, surname from authors;";
-    private static final String DELETE_AUTHOR = "delete from authors where id=?";
+    private static final String FIND_AUTHOR_BY_ID = "SELECT Name,Surname FROM Authors WHERE ID = ?;";
+    private static final String FIND_AUTHORS_BY_NAME = "SELECT ID,Surname FROM Authors WHERE Name = ?;";
+    private static final String FIND_AUTHORS_BY_SURNAME = "SELECT ID,Name V Authors WHERE Surname = ?;";
+    private static final String FIND_AUTHORS_BY_ALL = "SELECT ID FROM Authors WHERE Name = ? and Surname = ?;";
+    private static final String UPDATE_AUTHOR = "UPDATE Authors SET Name = ?, Surname=? WHERE ID=?;";
+    private static final String ADD_AUTHOR = "INSERT INTO Authors(Name, Surname) VALUES (?,?);";
+    private static final String GET_ALL_AUTHORS = "SELECT ID, Name, Surname FROM Authors;";
+    private static final String DELETE_AUTHOR = "DELETE FROM Authors WHERE ID=?";
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -39,20 +39,26 @@ public class AuthorRepository implements ModelRepository<Author> {
     }
 
     public boolean create(Author author) {
-        int i = jdbcTemplate.update(
+        int result = jdbcTemplate.update(
                 ADD_AUTHOR,
                 author.getName(),
                 author.getSurname());
-        System.out.println("-----------------"+i);
-        return true;
+        return result > 0;
     }
 
-    public int update(Author entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public int update(Author author) {
+        return jdbcTemplate.update(
+                UPDATE_AUTHOR,
+                author.getName(),
+                author.getSurname(),
+                author.getId());
     }
 
-    public boolean delete(Author entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public boolean delete(Author author) {
+        int result = jdbcTemplate.update(
+                DELETE_AUTHOR,
+                author.getId());
+        return result > 0;
     }
 
     public Author find(final Integer id) {
