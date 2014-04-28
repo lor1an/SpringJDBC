@@ -9,18 +9,33 @@
 http://www.springframework.org/schema/beans/spring-beans.xsd
 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd"
->
- 
-    <bean id="classForInjection" class="com.epam.model.author.ClassForInjection" >
-        <property name="name" value="Enoch" />
-        <property name="secondName" value="Root"/>
+> 
+    <jdbc:embedded-database id="myDB" type="HSQL">
+        <jdbc:script location="classpath:SQLTemplate.sql"/>     
+    </jdbc:embedded-database>
+    
+    <bean id="propertyConfigurer"
+          class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"
+          p:location="jdbc.properties" />
+    
+    <bean id="dataSource" class="com.jolbox.bonecp.BoneCPDataSource" destroy-method="close">
+        <property name="driverClass" value="${driver}" />
+        <property name="jdbcUrl" value="${url}" />
+        <property name="username" value="${user}"/>
+        <property name="password" value="${password}"/>
+        <property name="idleConnectionTestPeriodInMinutes" value="60"/>
+        <property name="idleMaxAgeInMinutes" value="240"/>
+        <property name="maxConnectionsPerPartition" value="30"/>
+        <property name="minConnectionsPerPartition" value="10"/>
+        <property name="partitionCount" value="3"/>
+        <property name="acquireIncrement" value="5"/>
+        <property name="statementsCacheSize" value="100"/>
+        <property name="releaseHelperThreads" value="3"/>
     </bean>
     
-    <!--<context:component-scan base-package="com.epam.repository"/>-->
-    
-    <jdbc:embedded-database id="dataSource" type="HSQL">
-        <jdbc:script location="classpath:SQLTemplate.sql"/>       
-    </jdbc:embedded-database>
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg type='javax.sql.DataSource' ref="dataSource"/>
+    </bean>
     
     <bean id="genreDAO" class="com.epam.repository.genre.GenreRepository">
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
@@ -34,9 +49,4 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
-    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <constructor-arg type='javax.sql.DataSource' ref="dataSource"/>
-    </bean>
-
- 
 </beans>

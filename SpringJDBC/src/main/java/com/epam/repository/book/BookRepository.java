@@ -5,10 +5,10 @@
  */
 package com.epam.repository.book;
 
-import com.epam.model.author.Author;
-import com.epam.model.book.Book;
-import com.epam.model.genre.Genre;
-  import com.epam.repository.ModelRepository;
+import com.epam.domain.author.Author;
+import com.epam.domain.book.Book;
+import com.epam.domain.genre.Genre;
+  import com.epam.repository.CRUDRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.jdbc.core.RowMapper;
  *
  * @author Anatolii_Hlazkov
  */
-public class BookRepository implements ModelRepository<Book> {
+public class BookRepository implements CRUDRepository<Book> {
 
     private static final String ADD_BOOK = "insert into books(Title, Author, Genre, Stock) values (?,?,?,?);";
     private static final String GET_ALL_BOOKS = "select Id, Title, Author, Genre, Stock from books;";

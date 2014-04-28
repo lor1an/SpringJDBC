@@ -1,8 +1,7 @@
 package com.epam;
 
-import com.epam.model.author.ClassForInjection;
-import com.epam.model.book.Book;
-import com.epam.model.genre.Genre;
+import com.epam.domain.book.Book;
+import com.epam.domain.genre.Genre;
 import com.epam.repository.author.AuthorRepository;
 import com.epam.repository.book.BookRepository;
 import com.epam.repository.genre.GenreRepository;

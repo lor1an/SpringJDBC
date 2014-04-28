@@ -5,8 +5,8 @@
  */
 package com.epam.repository.genre;
 
-import com.epam.model.genre.Genre;
-import com.epam.repository.ModelRepository;
+import com.epam.domain.genre.Genre;
+import com.epam.repository.CRUDRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
  *
  * @author Anatolii_Hlazkov
  */
-public class GenreRepository implements ModelRepository<Genre> {
+public class GenreRepository implements CRUDRepository<Genre> {
 
     private static final String FIND_GENRE_BY_ID = "SELECT name FROM Genres WHERE id = ?";
     private static final String FIND_GENRE_BY_NAME = "SELECT ID FROM Genres WHERE Name = ?;";

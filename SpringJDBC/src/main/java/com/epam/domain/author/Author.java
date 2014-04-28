@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.epam.model.author;
+package com.epam.domain.author;
 
 import java.util.Objects;
 

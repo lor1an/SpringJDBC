@@ -5,10 +5,8 @@
  */
 package com.epam.repository.author;
 
-import com.epam.model.author.Author;
-import com.epam.model.genre.Genre;
-import com.epam.repository.DAOTemplate;
-import com.epam.repository.ModelRepository;
+import com.epam.domain.author.Author;
+import com.epam.repository.CRUDRepository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +18,7 @@ import org.springframework.jdbc.core.RowMapper;
  *
  * @author Anatolii_Hlazkov
  */
-public class AuthorRepository implements ModelRepository<Author> {
+public class AuthorRepository implements CRUDRepository<Author> {
 
     private static final String FIND_AUTHOR_BY_ID = "SELECT Name,Surname FROM Authors WHERE ID = ?;";
     private static final String FIND_AUTHORS_BY_NAME = "SELECT ID,Surname FROM Authors WHERE Name = ?;";

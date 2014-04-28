@@ -12,7 +12,7 @@ import java.util.List;
  * @author Anatolii_Hlazkov
  * @param <T>
  */
-public interface ModelRepository<T> {
+public interface CRUDRepository<T> {
 
     abstract boolean create(T entity);
 

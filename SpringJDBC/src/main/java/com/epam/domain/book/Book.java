@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.epam.model.book;
+package com.epam.domain.book;
 
-import com.epam.model.author.Author;
-import com.epam.model.genre.Genre;
+import com.epam.domain.author.Author;
+import com.epam.domain.genre.Genre;
 import java.util.Objects;
 
 /**
