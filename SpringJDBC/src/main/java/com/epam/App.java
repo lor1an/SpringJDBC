@@ -5,6 +5,7 @@ import com.epam.domain.genre.Genre;
 import com.epam.repository.author.AuthorRepository;
 import com.epam.repository.book.BookRepository;
 import com.epam.repository.genre.GenreRepository;
+import com.epam.service.BookService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -13,7 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  *
  */
 public class App {
-
+    
     public static void main(String[] args) {
         ApplicationContext appContext = new ClassPathXmlApplicationContext("classpath:/newSpringXMLConfig.xml");
         GenreRepository gr = (GenreRepository) appContext.getBean("genreDAO");
@@ -34,9 +35,18 @@ public class App {
 
         AuthorRepository ar = (AuthorRepository) appContext.getBean("authorDAO");
         System.out.println(ar.findAll());
-
         BookRepository br = (BookRepository) appContext.getBean("bookDAO");
-        Book b1 = br.find(0);
+        BookService bs = new BookService(ar, br, gr);
+        Book b1 = bs.getBookById(0);
+        Book b2 = bs.getBookByTitle("Profession");
         System.out.println(b1);
+        System.out.println(b2);
+        b1.setTitle("Smith of Wootton Major");
+        bs.editBookDetails(b1);
+        System.out.println(bs.getAllBooks());
+        bs.deleteBookByID(b1);
+        b2.setTitle("Foundation");
+        bs.addNewBook(b2);
+        System.out.println(bs.getAllBooks());
     }
 }
