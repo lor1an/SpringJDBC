@@ -21,9 +21,7 @@ import org.springframework.jdbc.core.RowMapper;
 public class AuthorRepository implements CRUDRepository<Author> {
 
     private static final String FIND_AUTHOR_BY_ID = "SELECT Name,Surname FROM Authors WHERE ID = ?;";
-    private static final String FIND_AUTHORS_BY_NAME = "SELECT ID,Surname FROM Authors WHERE Name = ?;";
-    private static final String FIND_AUTHORS_BY_SURNAME = "SELECT ID,Name V Authors WHERE Surname = ?;";
-    private static final String FIND_AUTHORS_BY_ALL = "SELECT ID FROM Authors WHERE Name = ? and Surname = ?;";
+    private static final String FIND_AUTHORS_BY_SURNAME = "SELECT ID,Name FROM Authors WHERE Surname = ?;";
     private static final String UPDATE_AUTHOR = "UPDATE Authors SET Name = ?, Surname=? WHERE ID=?;";
     private static final String ADD_AUTHOR = "INSERT INTO Authors(Name, Surname) VALUES (?,?);";
     private static final String GET_ALL_AUTHORS = "SELECT ID, Name, Surname FROM Authors;";
@@ -73,8 +71,18 @@ public class AuthorRepository implements CRUDRepository<Author> {
                 });
     }
 
-    public Author findBySurname(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Author findBySurname(final String surname) {
+        return jdbcTemplate.queryForObject(FIND_AUTHORS_BY_SURNAME,
+                new Object[]{surname},
+                new RowMapper<Author>() {
+                    public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Author author = new Author();
+                        author.setId(rs.getInt("ID"));
+                        author.setName(rs.getString("Name"));
+                        author.setSurname(surname);
+                        return author;
+                    }
+                });
     }
 
     public List<Author> findAll() {

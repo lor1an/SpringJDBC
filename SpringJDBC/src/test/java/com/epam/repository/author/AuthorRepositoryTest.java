@@ -3,144 +3,75 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.epam.repository.author;
 
 import com.epam.domain.author.Author;
+import com.epam.domain.genre.Genre;
+import com.epam.repository.genre.GenreRepository;
 import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
  * @author lor1an
  */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/persistenceContextTest.xml"})
 public class AuthorRepositoryTest {
-    
-    public AuthorRepositoryTest() {
-    }
-    
-    @BeforeClass
-    public static void setUpClass() {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() {
-    }
-    
+
+    @Autowired
+    private AuthorRepository ar;
+
+    @Autowired
+    protected JdbcTemplate jdbcTemplate;
+
     @Before
-    public void setUp() {
-    }
-    
-    @After
-    public void tearDown() {
+    public void clearDB() {
+        jdbcTemplate.execute("TRUNCATE TABLE Authors");
+        jdbcTemplate.execute("ALTER TABLE Authors ALTER COLUMN ID RESTART WITH 0;");
     }
 
-    /**
-     * Test of setJdbcTemplate method, of class AuthorRepository.
-     */
     @Test
-    public void testSetJdbcTemplate() {
-        System.out.println("setJdbcTemplate");
-        JdbcTemplate jdbcTemplate = null;
-        AuthorRepository instance = new AuthorRepository();
-        instance.setJdbcTemplate(jdbcTemplate);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testCreateAuthorNoExceptions() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
     }
 
-    /**
-     * Test of create method, of class AuthorRepository.
-     */
     @Test
-    public void testCreate() {
-        System.out.println("create");
-        Author author = null;
-        AuthorRepository instance = new AuthorRepository();
-        boolean expResult = false;
-        boolean result = instance.create(author);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testCreateAuthor() {
+        Author author = new Author(1, "Name", "Surname");
+        ar.create(author);
+        int size = jdbcTemplate.queryForObject("select count(*) from Authors", Integer.class);
+        Assert.assertEquals(1, size);
     }
 
-    /**
-     * Test of update method, of class AuthorRepository.
-     */
     @Test
-    public void testUpdate() {
-        System.out.println("update");
-        Author author = null;
-        AuthorRepository instance = new AuthorRepository();
-        int expResult = 0;
-        int result = instance.update(author);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+    public void testFindByAuthorSurname() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
+        Author actualResult = ar.findBySurname("Surname");
+        Assert.assertEquals(author, actualResult);
     }
 
-    /**
-     * Test of delete method, of class AuthorRepository.
-     */
     @Test
-    public void testDelete() {
-        System.out.println("delete");
-        Author author = null;
-        AuthorRepository instance = new AuthorRepository();
-        boolean expResult = false;
-        boolean result = instance.delete(author);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
+    public void testFindAllAuthors() {
+        Author author1 = new Author(0, "Name", "Surname");
+        Author author2 = new Author(1, "Name", "Surname");
+        ar.create(author1);
+        ar.create(author2);
 
-    /**
-     * Test of find method, of class AuthorRepository.
-     */
-    @Test
-    public void testFind() {
-        System.out.println("find");
-        Integer id = null;
-        AuthorRepository instance = new AuthorRepository();
-        Author expResult = null;
-        Author result = instance.find(id);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        List<Author> actualResult = ar.findAll();
+        Assert.assertEquals(2, actualResult.size());
     }
-
-    /**
-     * Test of findBySurname method, of class AuthorRepository.
-     */
-    @Test
-    public void testFindBySurname() {
-        System.out.println("findBySurname");
-        String name = "";
-        AuthorRepository instance = new AuthorRepository();
-        Author expResult = null;
-        Author result = instance.findBySurname(name);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of findAll method, of class AuthorRepository.
-     */
-    @Test
-    public void testFindAll() {
-        System.out.println("findAll");
-        AuthorRepository instance = new AuthorRepository();
-        List<Author> expResult = null;
-        List<Author> result = instance.findAll();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-    
 }

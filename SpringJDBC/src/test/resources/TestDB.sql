@@ -1,4 +1,10 @@
 CREATE TABLE Genres(
-   id INTEGER IDENTITY not null,
+   ID INTEGER IDENTITY not null,
    name varchar(30),
  );
+
+CREATE TABLE Authors (
+    ID INTEGER IDENTITY,
+    Name VARCHAR (30) NOT NULL,
+    Surname VARCHAR(30) NOT NULL,
+);
