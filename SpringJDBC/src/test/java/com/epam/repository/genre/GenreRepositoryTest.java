@@ -33,7 +33,7 @@ public class GenreRepositoryTest {
     }
 
     @Test
-    public void testCreateGenretNoExceptions() {
+    public void testCreateGenreNoExceptions() {
         Genre genre = new Genre(1, "QQQ");
         gr.create(genre);
     }
@@ -60,8 +60,46 @@ public class GenreRepositoryTest {
         Genre genre2 = new Genre(1, "QQQ");
         gr.create(genre1);
         gr.create(genre2);
-
         List<Genre> actualResult = gr.findAll();
         Assert.assertEquals(2, actualResult.size());
+    }
+
+    @Test
+    public void testUpdateGenreWithoutFindNameAfter() {
+        Genre genre = new Genre(0, "QQQ");
+        gr.create(genre);
+        genre.setName("WWW");
+        int expecteResult = 1;
+        int result = gr.update(genre);
+        Assert.assertEquals(result, expecteResult);
+    }
+
+    @Test
+    public void testUpdateGenreWithFindNameAfter() {
+        Genre genre = new Genre(0, "QQQ");
+        gr.create(genre);
+        genre.setName("WWW");
+        gr.update(genre);
+        Genre actualResult = gr.findByName("WWW");
+        Assert.assertEquals(genre, actualResult);
+    }
+
+    @Test
+    public void testDeleteGenre() {
+        Genre genre = new Genre(0, "QQQ");
+        gr.create(genre);
+        int expectedCountOfGenres = 0;
+        gr.delete(genre);
+        int actualCountOfGenres = jdbcTemplate.queryForObject("SELECT COUNT(*)"
+                + " FROM Genres", Integer.class);
+        Assert.assertEquals(expectedCountOfGenres, actualCountOfGenres);
+    }
+
+    @Test
+    public void testFindByID() {
+        Genre genre = new Genre(0, "QQQ");
+        gr.create(genre);
+        Genre actualResult = gr.find(genre.getId());
+        Assert.assertEquals(genre, actualResult);
     }
 }

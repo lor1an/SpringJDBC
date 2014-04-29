@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.epam.repository.author;
 
 import com.epam.domain.author.Author;
@@ -64,8 +59,48 @@ public class AuthorRepositoryTest {
         Author author2 = new Author(1, "Name", "Surname");
         ar.create(author1);
         ar.create(author2);
-
         List<Author> actualResult = ar.findAll();
         Assert.assertEquals(2, actualResult.size());
+    }
+
+    @Test
+    public void testUpdateAuthorWithoutFindNameAfter() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
+        String newSurname = "AnotherSurname";
+        author.setSurname(newSurname);
+        int expectedResult = 1;
+        int result = ar.update(author);
+        Assert.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void testUpdateAuthorWithFindNameAfter() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
+        String newSurname = "AnotherSurname";
+        author.setSurname(newSurname);
+        ar.update(author);
+        Author actualResult = ar.findBySurname(newSurname);
+        Assert.assertEquals(author, actualResult);
+    }
+
+    @Test
+    public void testDeleteAuthor() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
+        int expectedCountOfAuthors = 0;
+        ar.delete(author);
+        int actualCountOfAuthors = jdbcTemplate.queryForObject("SELECT COUNT(*)"
+                + " FROM Authors", Integer.class);
+        Assert.assertEquals(expectedCountOfAuthors, actualCountOfAuthors);
+    }
+
+    @Test
+    public void testFindAuthorByID() {
+        Author author = new Author(0, "Name", "Surname");
+        ar.create(author);
+        Author actualResult = ar.find(author.getId());
+        Assert.assertEquals(author, actualResult);
     }
 }

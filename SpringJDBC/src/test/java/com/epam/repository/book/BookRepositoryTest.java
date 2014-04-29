@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.epam.repository.book;
 
 import com.epam.domain.author.Author;
@@ -11,13 +6,9 @@ import com.epam.domain.genre.Genre;
 import com.epam.repository.author.AuthorRepository;
 import com.epam.repository.genre.GenreRepository;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,16 +24,19 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class BookRepositoryTest {
 
     @Autowired
-    private BookRepository br;
+    public BookRepository br;
 
     @Autowired
-    private AuthorRepository ar;
+    public AuthorRepository ar;
 
     @Autowired
-    private GenreRepository gr;
+    public GenreRepository gr;
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
+    public JdbcTemplate jdbcTemplate;
+
+    public final Genre genre = new Genre(0, "Name");
+    public final Author author = new Author(0, "Name", "Surname");
 
     @Before
     public void clearDB() {
@@ -58,29 +52,20 @@ public class BookRepositoryTest {
                 + "(Author) REFERENCES authors");
         jdbcTemplate.execute("ALTER TABLE Books ADD CONSTRAINT GenreForeign FOREIGN KEY "
                 + "(Genre) REFERENCES genres");
-        Genre genre = new Genre(0, "Name");
-        Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
         gr.create(genre);
+        ar.create(author);
     }
 
     @Test
     public void testCreateBookNoExceptions() {
-        Genre genre = new Genre(0, "Name");
-        Author author = new Author(0, "Name", "Surname");
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
-//        ar.create(author);
-//        gr.create(genre);
-
         br.create(book);
     }
 
     @Test
     public void testCreateBook() {
-        Genre genre = new Genre(0, "Name");
-        Author author = new Author(0, "Name", "Surname");
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
@@ -91,8 +76,6 @@ public class BookRepositoryTest {
 
     @Test
     public void testFindByBookTitle() {
-        Genre genre = new Genre(0, "Name");
-        Author author = new Author(0, "Name", "Surname");
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
@@ -107,8 +90,6 @@ public class BookRepositoryTest {
 
     @Test
     public void testFindAllBooks() {
-        Genre genre = new Genre(0, "Name");
-        Author author = new Author(0, "Name", "Surname");
         int id1 = 0;
         int id2 = 1;
         int stock = 0;
@@ -116,9 +97,65 @@ public class BookRepositoryTest {
         Book book2 = new Book(id2, "Title", author, genre, stock);
         br.create(book1);
         br.create(book2);
-
         List<Book> actualResult = br.findAll();
         Assert.assertEquals(2, actualResult.size());
+    }
+
+    @Test
+    public void testUpdateBookWithoutFindByTitleAfter() {
+        int id = 0;
+        int stock = 0;
+        Book book = new Book(id, "Title", author, genre, stock);
+        br.create(book);
+        String newTitle = "AnotherTitle";
+        book.setTitle(newTitle);
+        int result = 1;
+        int expectedResult = br.update(book);
+        Assert.assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void testUpdateBookWithFindByTitleAfter() {
+        int id = 0;
+        int stock = 0;
+        Book book = new Book(id, "Title", author, genre, stock);
+        br.create(book);
+        String newTitle = "AnotherTitle";
+        book.setTitle(newTitle);
+        br.update(book);
+        Book actualResult = br.findByTitle(newTitle);
+        Author actualAuthor = ar.find(actualResult.getAuthor().getId());
+        Genre actualGenre = gr.find(actualResult.getGenre().getId());
+        actualResult.setAuthor(actualAuthor);
+        actualResult.setGenre(actualGenre);
+        Assert.assertEquals(book, actualResult);
+    }
+
+    @Test
+    public void testDeleteBook() {
+        int id = 0;
+        int stock = 0;
+        Book book = new Book(id, "Title", author, genre, stock);
+        br.create(book);
+        int expectedCountOfBooks = 0;
+        br.delete(book);
+        int actualCountOfBooks = jdbcTemplate.queryForObject("SELECT COUNT(*)"
+                + " FROM Books", Integer.class);
+        Assert.assertEquals(expectedCountOfBooks, actualCountOfBooks);
+    }
+
+    @Test
+    public void testFindBookByID() {
+        int id = 0;
+        int stock = 0;
+        Book book = new Book(id, "Title", author, genre, stock);
+        br.create(book);
+        Book actualResult = br.find(book.getId());
+        Author actualAuthor = ar.find(actualResult.getAuthor().getId());
+        Genre actualGenre = gr.find(actualResult.getGenre().getId());
+        actualResult.setAuthor(actualAuthor);
+        actualResult.setGenre(actualGenre);
+        Assert.assertEquals(book, actualResult);
     }
 
 }
