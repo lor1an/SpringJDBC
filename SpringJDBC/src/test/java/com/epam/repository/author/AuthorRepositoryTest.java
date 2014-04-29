@@ -6,16 +6,10 @@
 package com.epam.repository.author;
 
 import com.epam.domain.author.Author;
-import com.epam.domain.genre.Genre;
-import com.epam.repository.genre.GenreRepository;
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -12,13 +12,13 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
    
     <context:component-scan base-package="ua.yandex.shad.socnet.repository"/>
     
-    <jdbc:embedded-database id="dataSource" type="HSQL">
-        <jdbc:script location="classpath:TestDB.sql"/>
+    <jdbc:embedded-database id="forBooksDB" type="HSQL">
+        <jdbc:script location="classpath:DBforBooks.sql"/>
     </jdbc:embedded-database>
     
    
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
-        <constructor-arg type='javax.sql.DataSource' ref="dataSource"/>
+        <constructor-arg type='javax.sql.DataSource' ref="forBooksDB"/>
     </bean>
     
     <bean id="genreDAO" class="com.epam.repository.genre.GenreRepository">
