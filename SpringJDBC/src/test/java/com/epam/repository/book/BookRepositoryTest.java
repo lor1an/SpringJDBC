@@ -40,18 +40,10 @@ public class BookRepositoryTest {
 
     @Before
     public void clearDB() {
-        jdbcTemplate.execute("ALTER TABLE Books DROP CONSTRAINT AuthorForeign");
-        jdbcTemplate.execute("ALTER TABLE Books DROP CONSTRAINT GenreForeign");
-        jdbcTemplate.execute("TRUNCATE TABLE Genres ");
-        jdbcTemplate.execute("TRUNCATE TABLE Authors ");
-        jdbcTemplate.execute("TRUNCATE TABLE Books");
+        jdbcTemplate.execute("TRUNCATE SCHEMA PUBLIC AND COMMIT");
         jdbcTemplate.execute("ALTER TABLE Books ALTER COLUMN ID RESTART WITH 0;");
         jdbcTemplate.execute("ALTER TABLE Authors ALTER COLUMN ID RESTART WITH 0;");
         jdbcTemplate.execute("ALTER TABLE Genres ALTER COLUMN ID RESTART WITH 0;");
-        jdbcTemplate.execute("ALTER TABLE Books ADD CONSTRAINT AuthorForeign FOREIGN KEY "
-                + "(Author) REFERENCES authors");
-        jdbcTemplate.execute("ALTER TABLE Books ADD CONSTRAINT GenreForeign FOREIGN KEY "
-                + "(Genre) REFERENCES genres");
         gr.create(genre);
         ar.create(author);
     }
