@@ -24,19 +24,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class BookRepositoryTest {
 
     @Autowired
-    public BookRepository br;
-
-    @Autowired
-    public AuthorRepository ar;
-
-    @Autowired
-    public GenreRepository gr;
+    public BookRepository bookRepository;
 
     @Autowired
     public JdbcTemplate jdbcTemplate;
 
     public final Genre genre = new Genre(0, "Name");
     public final Author author = new Author(0, "Name", "Surname");
+    public final Genre genre0 = new Genre(0, null);
+    public final Author author0 = new Author(0, null, null);
 
     @Before
     public void clearDB() {
@@ -44,8 +40,8 @@ public class BookRepositoryTest {
         jdbcTemplate.execute("ALTER TABLE Books ALTER COLUMN ID RESTART WITH 0;");
         jdbcTemplate.execute("ALTER TABLE Authors ALTER COLUMN ID RESTART WITH 0;");
         jdbcTemplate.execute("ALTER TABLE Genres ALTER COLUMN ID RESTART WITH 0;");
-        gr.create(genre);
-        ar.create(author);
+        jdbcTemplate.execute("INSERT INTO authors (Name, Surname) values ('Name', 'Surname');");
+        jdbcTemplate.execute("INSERT INTO genres (Name) values ('Name'); ");
     }
 
     @Test
@@ -53,7 +49,7 @@ public class BookRepositoryTest {
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
+        bookRepository.create(book);
     }
 
     @Test
@@ -61,7 +57,7 @@ public class BookRepositoryTest {
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
+        bookRepository.create(book);
         int size = jdbcTemplate.queryForObject("select count(*) from Books", Integer.class);
         Assert.assertEquals(1, size);
     }
@@ -70,13 +66,9 @@ public class BookRepositoryTest {
     public void testFindByBookTitle() {
         int id = 0;
         int stock = 0;
-        Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
-        Book actualResult = br.findByTitle("Title");
-        Author actualAuthor = ar.find(actualResult.getAuthor().getId());
-        Genre actualGenre = gr.find(actualResult.getGenre().getId());
-        actualResult.setAuthor(actualAuthor);
-        actualResult.setGenre(actualGenre);
+        Book book = new Book(id, "Title", author0, genre0, stock);
+        bookRepository.create(book);
+        Book actualResult = bookRepository.findByTitle("Title");;
         Assert.assertEquals(book, actualResult);
     }
 
@@ -87,9 +79,9 @@ public class BookRepositoryTest {
         int stock = 0;
         Book book1 = new Book(id1, "Title", author, genre, stock);
         Book book2 = new Book(id2, "Title", author, genre, stock);
-        br.create(book1);
-        br.create(book2);
-        List<Book> actualResult = br.findAll();
+        bookRepository.create(book1);
+        bookRepository.create(book2);
+        List<Book> actualResult = bookRepository.findAll();
         Assert.assertEquals(2, actualResult.size());
     }
 
@@ -98,11 +90,11 @@ public class BookRepositoryTest {
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
+        bookRepository.create(book);
         String newTitle = "AnotherTitle";
         book.setTitle(newTitle);
         int result = 1;
-        int expectedResult = br.update(book);
+        int expectedResult = bookRepository.update(book);
         Assert.assertEquals(result, expectedResult);
     }
 
@@ -110,16 +102,12 @@ public class BookRepositoryTest {
     public void testUpdateBookWithFindByTitleAfter() {
         int id = 0;
         int stock = 0;
-        Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
+        Book book = new Book(id, "Title", author0, genre0, stock);
+        bookRepository.create(book);
         String newTitle = "AnotherTitle";
         book.setTitle(newTitle);
-        br.update(book);
-        Book actualResult = br.findByTitle(newTitle);
-        Author actualAuthor = ar.find(actualResult.getAuthor().getId());
-        Genre actualGenre = gr.find(actualResult.getGenre().getId());
-        actualResult.setAuthor(actualAuthor);
-        actualResult.setGenre(actualGenre);
+        bookRepository.update(book);
+        Book actualResult = bookRepository.findByTitle(newTitle);
         Assert.assertEquals(book, actualResult);
     }
 
@@ -128,9 +116,9 @@ public class BookRepositoryTest {
         int id = 0;
         int stock = 0;
         Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
+        bookRepository.create(book);
         int expectedCountOfBooks = 0;
-        br.delete(book);
+        bookRepository.delete(book);
         int actualCountOfBooks = jdbcTemplate.queryForObject("SELECT COUNT(*)"
                 + " FROM Books", Integer.class);
         Assert.assertEquals(expectedCountOfBooks, actualCountOfBooks);
@@ -140,13 +128,9 @@ public class BookRepositoryTest {
     public void testFindBookByID() {
         int id = 0;
         int stock = 0;
-        Book book = new Book(id, "Title", author, genre, stock);
-        br.create(book);
-        Book actualResult = br.find(book.getId());
-        Author actualAuthor = ar.find(actualResult.getAuthor().getId());
-        Genre actualGenre = gr.find(actualResult.getGenre().getId());
-        actualResult.setAuthor(actualAuthor);
-        actualResult.setGenre(actualGenre);
+        Book book = new Book(id, "Title", author0, genre0, stock);
+        bookRepository.create(book);
+        Book actualResult = bookRepository.find(book.getId());
         Assert.assertEquals(book, actualResult);
     }
 

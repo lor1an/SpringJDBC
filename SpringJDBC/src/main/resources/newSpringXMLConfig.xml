@@ -49,4 +49,11 @@ http://www.springframework.org/schema/jdbc http://www.springframework.org/schema
         <property name="jdbcTemplate" ref="jdbcTemplate"/>
     </bean>
     
+    <bean id="bookService" class="com.epam.service.BookService">
+        <constructor-arg type='com.epam.repository.author.AuthorRepository' ref="authorDAO"/>
+        <constructor-arg type='com.epam.repository.book.BookRepository' ref="bookDAO"/>
+        <constructor-arg type='com.epam.repository.genre.GenreRepository' ref="genreDAO"/>
+    </bean>
+    
+    
 </beans>

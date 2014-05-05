@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class AuthorRepositoryTest {
 
     @Autowired
-    private AuthorRepository ar;
+    private AuthorRepository authorRepository;
 
     @Autowired
     protected JdbcTemplate jdbcTemplate;
@@ -34,13 +34,13 @@ public class AuthorRepositoryTest {
     @Test
     public void testCreateAuthorNoExceptions() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
+        authorRepository.create(author);
     }
 
     @Test
     public void testCreateAuthor() {
         Author author = new Author(1, "Name", "Surname");
-        ar.create(author);
+        authorRepository.create(author);
         int size = jdbcTemplate.queryForObject("select count(*) from Authors", Integer.class);
         Assert.assertEquals(1, size);
     }
@@ -48,8 +48,8 @@ public class AuthorRepositoryTest {
     @Test
     public void testFindByAuthorSurname() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
-        Author actualResult = ar.findBySurname("Surname");
+        authorRepository.create(author);
+        Author actualResult = authorRepository.findBySurname("Surname");
         Assert.assertEquals(author, actualResult);
     }
 
@@ -57,40 +57,40 @@ public class AuthorRepositoryTest {
     public void testFindAllAuthors() {
         Author author1 = new Author(0, "Name", "Surname");
         Author author2 = new Author(1, "Name", "Surname");
-        ar.create(author1);
-        ar.create(author2);
-        List<Author> actualResult = ar.findAll();
+        authorRepository.create(author1);
+        authorRepository.create(author2);
+        List<Author> actualResult = authorRepository.findAll();
         Assert.assertEquals(2, actualResult.size());
     }
 
     @Test
     public void testUpdateAuthorWithoutFindNameAfter() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
+        authorRepository.create(author);
         String newSurname = "AnotherSurname";
         author.setSurname(newSurname);
         int expectedResult = 1;
-        int result = ar.update(author);
+        int result = authorRepository.update(author);
         Assert.assertEquals(result, expectedResult);
     }
 
     @Test
     public void testUpdateAuthorWithFindNameAfter() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
+        authorRepository.create(author);
         String newSurname = "AnotherSurname";
         author.setSurname(newSurname);
-        ar.update(author);
-        Author actualResult = ar.findBySurname(newSurname);
+        authorRepository.update(author);
+        Author actualResult = authorRepository.findBySurname(newSurname);
         Assert.assertEquals(author, actualResult);
     }
 
     @Test
     public void testDeleteAuthor() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
+        authorRepository.create(author);
         int expectedCountOfAuthors = 0;
-        ar.delete(author);
+        authorRepository.delete(author);
         int actualCountOfAuthors = jdbcTemplate.queryForObject("SELECT COUNT(*)"
                 + " FROM Authors", Integer.class);
         Assert.assertEquals(expectedCountOfAuthors, actualCountOfAuthors);
@@ -99,8 +99,8 @@ public class AuthorRepositoryTest {
     @Test
     public void testFindAuthorByID() {
         Author author = new Author(0, "Name", "Surname");
-        ar.create(author);
-        Author actualResult = ar.find(author.getId());
+        authorRepository.create(author);
+        Author actualResult = authorRepository.find(author.getId());
         Assert.assertEquals(author, actualResult);
     }
 }

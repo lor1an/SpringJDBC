@@ -15,13 +15,13 @@ import java.util.Objects;
  */
 public class Book {
 
-    private int id;
+    private Integer id;
     private String title;
     private Author author;
     private Genre genre;
-    private int stock;
+    private Integer stock;
 
-    public Book(int id, String title, Author author, Genre genre, int stock) {
+    public Book(Integer id, String title, Author author, Genre genre, int stock) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -45,7 +45,7 @@ public class Book {
     public Book() {
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -61,7 +61,7 @@ public class Book {
         this.genre = genre;
     }
 
-    public void setStock(int stock) {
+    public void setStock(Integer stock) {
         this.stock = stock;
     }
 

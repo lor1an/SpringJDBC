@@ -9,6 +9,8 @@ CREATE TABLE Authors (
     Surname VARCHAR(30) NOT NULL,
 );
 
+
+
 CREATE TABLE books (
      ID INTEGER IDENTITY,
      Title VARCHAR (70) NOT NULL,
@@ -17,3 +19,5 @@ CREATE TABLE books (
      CONSTRAINT AuthorForeign FOREIGN KEY (Author) REFERENCES authors ,
      CONSTRAINT GenreForeign FOREIGN KEY (Genre) REFERENCES genres
 );
+
+

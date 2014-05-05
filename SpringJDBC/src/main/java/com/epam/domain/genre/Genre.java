@@ -13,10 +13,10 @@ import java.util.Objects;
  */
 public class Genre {
 
-    private int id;
+    private Integer id;
     private String name;
 
-    public Genre(int id, String name) {
+    public Genre(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -36,7 +36,7 @@ public class Genre {
         return name;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
